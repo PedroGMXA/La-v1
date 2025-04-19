@@ -1,9 +1,23 @@
+<?php
+// Incluir config para iniciar sesión
+require_once "config.php";
+
+// Verificar si el usuario está logueado, si no, redirigir a la página de login
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+
+// Obtener el nombre de usuario de la sesión para mostrarlo
+$username = htmlspecialchars($_SESSION["username"]); // Usar htmlspecialchars para prevenir XSS
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control Mejorado - Dev González</title>
+    <title>Panel de Control - LavanderiaMX</title> <!-- Título actualizado -->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +25,9 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <link rel="stylesheet" href="css/panel.css">
+    <!-- Ruta CSS actualizada -->
+    <link rel="stylesheet" href="assets/css/estilos.css"> <!-- Asumiendo que panel.css está en estilos.css o en otra parte de assets -->
+    <link rel="stylesheet" href="css/panel.css"> <!-- Mantengo esta por si acaso -->
 </head>
 <body>
     <div class="dashboard-container">
@@ -22,17 +38,20 @@
                 </button>
                 <div class="logo">
                     <a href="#" class="logo-link" aria-label="Ir al inicio del panel">
-                        <i class="fas fa-code logo-icon" aria-hidden="true"></i>
-                        <span class="logo-text">DEV<span class="logo-accent">GMXA</span></span>
+                        <!-- Icono actualizado -->
+                        <i class="fas fa-tint logo-icon" aria-hidden="true"></i> 
+                        <span class="logo-text">LAVANDERIA<span class="logo-accent">MX</span></span> <!-- Nombre actualizado -->
                     </a>
                 </div>
             </div>
             <div class="header-right">
                 <div class="user-info">
-                    <span class="user-name">Usuario Ejemplo</span>
-                    <button class="logout-button" aria-label="Cerrar la sesión actual">
+                    <!-- Mostrar nombre de usuario de la sesión -->
+                    <span class="user-name"><?php echo $username; ?></span> 
+                    <!-- Enlace para cerrar sesión -->
+                    <a href="logout.php" class="logout-button" aria-label="Cerrar la sesión actual">
                         <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Cerrar Sesión
-                    </button>
+                    </a>
                 </div>
             </div>
         </header>
@@ -40,7 +59,8 @@
         <aside class="dashboard-sidebar">
             <nav aria-label="Navegación principal">
                 <ul>
-                    <li><a href="#" class="active" aria-current="page"><i class="fas fa-tachometer-alt" aria-hidden="true"></i> <span>Panel Principal</span></a></li>
+                    <!-- Los enlaces deberían apuntar a páginas PHP reales o usar JS para cargar contenido -->
+                    <li><a href="panel.php" class="active" aria-current="page"><i class="fas fa-tachometer-alt" aria-hidden="true"></i> <span>Panel Principal</span></a></li>
                     <li><a href="#"><i class="fas fa-shopping-cart" aria-hidden="true"></i> <span>Servicios</span></a></li>
                     <li><a href="#"><i class="fas fa-tshirt" aria-hidden="true"></i> <span>Productos</span></a></li>
                     <li><a href="#"><i class="fas fa-users" aria-hidden="true"></i> <span>Clientes</span></a></li>
@@ -58,35 +78,37 @@
         <main class="dashboard-main">
             <section class="panel-header">
                 <h1>Panel Principal</h1>
-                <p>Bienvenido de nuevo, Usuario Ejemplo.</p>
+                 <!-- Mensaje de bienvenida con nombre de usuario -->
+                <p>Bienvenido de nuevo, <?php echo $username; ?>.</p>
             </section>
 
             <section class="quick-stats">
+                 <!-- Estos datos deberían cargarse dinámicamente con PHP/JS -->
                  <div class="stat-card">
                      <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
                      <div class="stat-info">
-                         <span class="stat-value">$1,250</span>
+                         <span class="stat-value">$0.00</span>
                          <span class="stat-label">Ingresos Hoy</span>
                      </div>
                  </div>
                  <div class="stat-card">
                      <div class="stat-icon"><i class="fas fa-user-plus"></i></div>
                      <div class="stat-info">
-                         <span class="stat-value">37</span>
+                         <span class="stat-value">0</span>
                          <span class="stat-label">Nuevos Clientes</span>
                      </div>
                  </div>
                  <div class="stat-card">
                      <div class="stat-icon"><i class="fas fa-tasks"></i></div>
                      <div class="stat-info">
-                         <span class="stat-value">15</span>
+                         <span class="stat-value">0</span>
                          <span class="stat-label">Tareas Pendientes</span>
                      </div>
                  </div>
                  <div class="stat-card notification-card">
                      <div class="stat-icon"><i class="fas fa-bell"></i></div>
                      <div class="stat-info">
-                         <span class="stat-value">3</span>
+                         <span class="stat-value">0</span>
                          <span class="stat-label">Notificaciones</span>
                      </div>
                  </div>
@@ -127,8 +149,11 @@
                                     <th scope="col">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                </tbody>
+                            <!-- ID AÑADIDO AQUÍ -->
+                            <tbody id="servicios-tbody">
+                                <!-- Los datos se cargarán aquí -->
+                                <tr><td colspan="5">Cargando servicios...</td></tr>
+                            </tbody>
                         </table>
                     </div>
                     <div class="pagination">
@@ -156,7 +181,9 @@
                                     <th scope="col">Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                             <!-- ID AÑADIDO AQUÍ (por si lo necesitas después) -->
+                            <tbody id="clientes-tbody">
+                                <tr><td colspan="5">Cargando clientes...</td></tr>
                                </tbody>
                         </table>
                      </div>
@@ -166,6 +193,7 @@
         </main>
     </div>
 
-    <script src="js/script.js"></script>
+    <!-- Ruta JS actualizada -->
+    <script src="assets/js/script.js"></script>
 </body>
 </html>
